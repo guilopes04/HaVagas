@@ -5,28 +5,24 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import guilopes.Cadastro.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        val nameEditText: EditText = findViewById(R.id.name)
-        val phoneEditText: EditText = findViewById(R.id.phone)
-        val emailEditText: EditText = findViewById(R.id.email)
-        val emailListCheckBox: CheckBox = findViewById(R.id.email_list)
-        val genderRadioGroup: RadioGroup = findViewById(R.id.gender_group)
-        val cityEditText: EditText = findViewById(R.id.city)
-        val ufSpinner: Spinner = findViewById(R.id.uf_spinner)
-        val clearButton: Button = findViewById(R.id.clear_button)
-        val saveButton: Button = findViewById(R.id.save_button)
 
         val ufAdapter = ArrayAdapter.createFromResource(
             this,
@@ -34,18 +30,18 @@ class MainActivity : AppCompatActivity() {
             android.R.layout.simple_spinner_item
         )
         ufAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        ufSpinner.adapter = ufAdapter
-        ufSpinner.setSelection(0)
+        binding.ufSpinner.adapter = ufAdapter
+        binding.ufSpinner.setSelection(0)
 
-        saveButton.setOnClickListener {
+        binding.saveButton.setOnClickListener {
             var valitedFields = false
 
-            val name = nameEditText.text.toString()
+            val name = binding.name.text.toString()
             if(name.isEmpty()) {
                 Toast.makeText(this, "Por favor, preencha seu nome.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val phone = phoneEditText.text.toString()
+            val phone = binding.phone.text.toString()
             if(phone.isNotEmpty()){
                 val validatedPhone = ValidatorHelpers.isValidPhone(phone)
 
@@ -55,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val email = emailEditText.text.toString()
+            val email = binding.email.text.toString()
             if(email.isEmpty()) {
                 Toast.makeText(this, "Por favor, preencha seu email.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -65,24 +61,23 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val wantsEmail = emailListCheckBox.isChecked
+            val wantsEmail = binding.emailList.isChecked
 
-            val city = cityEditText.text.toString()
+            val city = binding.city.text.toString()
             if(city.isEmpty()) {
                 Toast.makeText(this, "Por favor, preencha sua cidade.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val selectedGenderId = genderRadioGroup.checkedRadioButtonId
+            val selectedGenderId = binding.genderGroup.checkedRadioButtonId
             val gender = when (selectedGenderId) {
                 R.id.male -> "Masculino"
                 R.id.female -> "Feminino"
                 else -> "Não especificado"
             }
 
-            val uf = ufSpinner.selectedItem.toString()
-            val selectedUf = ufSpinner.selectedItem.toString()
-            if (selectedUf == "Selecione uma UF") {
+            val uf = binding.ufSpinner.selectedItem.toString()
+            if (uf == "Selecione uma UF") {
                 Toast.makeText(this, "Por favor, selecione uma UF válida.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -105,14 +100,14 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        clearButton.setOnClickListener {
-            nameEditText.text.clear()
-            phoneEditText.text.clear()
-            emailEditText.text.clear()
-            emailListCheckBox.isChecked = false
-            genderRadioGroup.clearCheck()
-            cityEditText.text.clear()
-            ufSpinner.setSelection(0)
+        binding.clearButton.setOnClickListener {
+            binding.name.text.clear()
+            binding.phone.text.clear()
+            binding.email.text.clear()
+            binding.emailList.isChecked = false
+            binding.genderGroup.clearCheck()
+            binding.city.text.clear()
+            binding.ufSpinner.setSelection(0)
         }
     }
 }
