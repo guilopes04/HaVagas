@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "guilopes.Cadastro"
+    namespace = "guilopes.HaVagas"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "guilopes.Cadastro"
+        applicationId = "guilopes.HaVagas"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core)
+    implementation(libs.filament.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

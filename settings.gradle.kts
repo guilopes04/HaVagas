@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Cadastro"
+rootProject.name = "HaVagas"
 include(":app")
  

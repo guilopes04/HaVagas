@@ -1,4 +1,4 @@
-package guilopes.Cadastro
+package guilopes.HaVagas
 
 import org.junit.Test
 

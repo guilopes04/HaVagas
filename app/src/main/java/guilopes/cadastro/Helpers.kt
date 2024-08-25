@@ -1,4 +1,4 @@
-package guilopes.Cadastro
+package guilopes.HaVagas
 
 import android.util.Patterns
 
@@ -9,7 +9,8 @@ class ValidatorHelpers {
         }
 
         fun isValidPhone(phone: String): Boolean {
-            return Patterns.PHONE.matcher(phone).matches()
+            val phonePattern = "^\\(?(\\d{2})\\)? ?(9?\\d{4})-?(\\d{4})$".toRegex()
+            return phonePattern.matches(phone)
         }
     }
 }

@@ -1,33 +1,12 @@
 <resources>
-    <string name="app_name">Cadastro</string>
-    <string-array name="ufs_array">
-        <item>Selecione uma UF</item>
-        <item>Acre</item>
-        <item>Alagoas</item>
-        <item>Amapá</item>
-        <item>Amazonas</item>
-        <item>Bahia</item>
-        <item>Ceará</item>
-        <item>Distrito Federal</item>
-        <item>Espírito Santo</item>
-        <item>Goiás</item>
-        <item>Maranhão</item>
-        <item>Mato Grosso</item>
-        <item>Mato Grosso do Sul</item>
-        <item>Minas Gerais</item>
-        <item>Pará</item>
-        <item>Paraíba</item>
-        <item>Paraná</item>
-        <item>Pernambuco</item>
-        <item>Piauí</item>
-        <item>Rio de Janeiro</item>
-        <item>Rio Grande do Norte</item>
-        <item>Rio Grande do Sul</item>
-        <item>Rondônia</item>
-        <item>Roraima</item>
-        <item>Santa Catarina</item>
-        <item>São Paulo</item>
-        <item>Sergipe</item>
-        <item>Tocantins</item>
+    <string name="app_name">HaVagas</string>
+    <string-array name="education_levels">
+        <item>Selecione o nivel de escolaridade</item>
+        <item>Ensino Fundamental</item>
+        <item>Ensino Médio</item>
+        <item>Ensino Superior</item>
+        <item>Pós-graduação</item>
+        <item>Mestrado</item>
+        <item>Doutorado</item>
     </string-array>
 </resources>
