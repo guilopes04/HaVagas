@@ -8,6 +8,10 @@ data class Formulario(
     val genero: String,
     val dataNascimento: String,
     val nivelEscolaridade: String,
+    val anoConclusao: String,
+    val instituicao: String,
+    val monografia: String,
+    val orientador: String,
     val vagasInteresse: String
 ) {
     override fun toString(): String {
@@ -20,6 +24,10 @@ data class Formulario(
             Gênero: $genero
             Data de Nascimento: $dataNascimento
             Nível de Escolaridade: $nivelEscolaridade
+            Ano de conclusão: $anoConclusao
+            Instituição: $instituicao
+            Monografia: $monografia
+            Orientador: $orientador
             Vagas de Interesse: $vagasInteresse
         """.trimIndent()
     }

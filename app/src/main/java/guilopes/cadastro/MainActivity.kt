@@ -97,14 +97,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.saveButton.setOnClickListener {
-            var valitedFields = true
-
-            val name = binding.name.text.toString()
-            if (name.isEmpty()) {
-                Toast.makeText(this, "Por favor, preencha seu nome.", Toast.LENGTH_SHORT).show()
-                valitedFields = false
+            val validatedInputs = validateInputs()
+            if(!validatedInputs){
                 return@setOnClickListener
             }
+
+            val name = binding.name.text.toString()
 
             val phone1 = binding.phone1.text.toString()
             val phone2 = binding.phone2.text.toString()
@@ -115,55 +113,9 @@ class MainActivity : AppCompatActivity() {
                 else -> "Não especificado"
             }
 
-            val phoneTypeLowerCase = phoneType.lowercase(Locale.getDefault())
-
-            if (phone1.isEmpty()) {
-                Toast.makeText(this, """Por favor, preencha o telefone $phoneTypeLowerCase.""", Toast.LENGTH_SHORT).show()
-                valitedFields = false
-                return@setOnClickListener
-            } else if (!ValidatorHelpers.isValidPhone(phone1)) {
-                Toast.makeText(this, """Por favor, preencha o telefone $phoneTypeLowerCase válido.""", Toast.LENGTH_SHORT).show()
-                valitedFields = false
-                return@setOnClickListener
-            }
-
-            if (binding.phone2.visibility == VISIBLE) {
-                if (phone2.isEmpty()) {
-                    Toast.makeText(
-                        this,
-                        """Por favor, preencha um telefone celular.""",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    valitedFields = false
-                    return@setOnClickListener
-                } else if (!ValidatorHelpers.isValidPhone(phone2)) {
-                    Toast.makeText(
-                        this,
-                        "Por favor, preencha um telefone celular válido.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    valitedFields = false
-                    return@setOnClickListener
-                }
-            }
-
             val email = binding.email.text.toString()
-            if (email.isEmpty()) {
-                Toast.makeText(this, "Por favor, preencha seu email.", Toast.LENGTH_SHORT).show()
-                valitedFields = false
-                return@setOnClickListener
-            } else if (!ValidatorHelpers.isValidEmail(email)) {
-                Toast.makeText(this, "Por favor, preencha um email válido.", Toast.LENGTH_SHORT).show()
-                valitedFields = false
-                return@setOnClickListener
-            }
 
             val birthDate = binding.birthDate.text.toString()
-            if (birthDate.isEmpty()) {
-                Toast.makeText(this, "Por favor, preencha a data de nascimento.", Toast.LENGTH_SHORT).show()
-                valitedFields = false
-                return@setOnClickListener
-            }
 
             val selectedGenderId = binding.genderGroup.checkedRadioButtonId
             val gender = when (selectedGenderId) {
@@ -173,65 +125,16 @@ class MainActivity : AppCompatActivity() {
             }
 
             val education = binding.education.selectedItem.toString()
-            if (education == "Selecione o nivel de escolaridade") {
-                Toast.makeText(this, "Por favor, selecione um nível de escolaridade.", Toast.LENGTH_SHORT).show()
-                valitedFields = false
-                return@setOnClickListener
-            }
-
             val conclusionYear = binding.conclusionYear.text.toString()
             val institution = binding.institution.text.toString()
             val thesisTitle = binding.thesisTitle.text.toString()
             val advisor = binding.advisor.text.toString()
 
-            when (education) {
-                "Ensino Fundamental", "Ensino Médio" -> {
-
-                    if(!validatedConclusionYear(conclusionYear)) {
-                        valitedFields = false
-                        return@setOnClickListener
-                    }
-                }
-                "Ensino Superior", "Pós-graduação" -> {
-                    if(!validatedConclusionYear(conclusionYear)) {
-                        valitedFields = false
-                        return@setOnClickListener
-                    }
-                    if(!validatedInstitution(institution)){
-                        valitedFields = false
-                        return@setOnClickListener
-                    }
-                }
-                "Mestrado", "Doutorado" -> {
-                    if(!validatedConclusionYear(conclusionYear)) {
-                        valitedFields = false
-                        return@setOnClickListener
-                    }
-                    if(!validatedInstitution(institution)){
-                        valitedFields = false
-                        return@setOnClickListener
-                    }
-                    if(!validatedThesisTitle(thesisTitle)){
-                        valitedFields = false
-                        return@setOnClickListener
-                    }
-                    if(!validatedAdvisor(advisor)){
-                        valitedFields = false
-                        return@setOnClickListener
-                    }
-                }
-            }
-
             val jobsInterest = binding.jobsInterest.text.toString()
-            if (jobsInterest.isEmpty()) {
-                Toast.makeText(this, "Por favor, preencha vagas de interesse.", Toast.LENGTH_SHORT).show()
-                valitedFields = false
-                return@setOnClickListener
-            }
 
             val wantsEmail = binding.emailList.isChecked
 
-            if (valitedFields) {
+            if (validatedInputs) {
                 val formulario = Formulario(
                     nome = name,
                     telefone1 = phone1,
@@ -242,6 +145,10 @@ class MainActivity : AppCompatActivity() {
                     genero = gender,
                     dataNascimento = birthDate,
                     nivelEscolaridade = education,
+                    anoConclusao = conclusionYear,
+                    instituicao = institution,
+                    monografia = thesisTitle,
+                    orientador = advisor,
                     vagasInteresse = jobsInterest
                 )
 
@@ -251,25 +158,158 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.clearButton.setOnClickListener {
-            binding.name.text.clear()
-            binding.phone1.text.clear()
-            binding.phone2.visibility = GONE
-            binding.phone2.text.clear()
-            binding.email.text.clear()
-            binding.emailList.isChecked = false
-            binding.birthDate.text?.clear()
-            binding.genderGroup.clearCheck()
-            binding.education.setSelection(0)
-            binding.conclusionYear.text.clear()
-            binding.institution.text.clear()
-            binding.thesisTitle.text.clear()
-            binding.advisor.text.clear()
-            binding.jobsInterest.text.clear()
+            clearFields()
         }
 
         binding.addPhone.setOnClickListener {
             binding.phone2.visibility = VISIBLE
         }
+    }
+
+    private fun validateInputs(): Boolean {
+        var valitedFields = true
+
+        val name = binding.name.text.toString()
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Por favor, preencha seu nome.", Toast.LENGTH_SHORT).show()
+            valitedFields = false
+            return valitedFields
+        }
+
+        val phone1 = binding.phone1.text.toString()
+        val phone2 = binding.phone2.text.toString()
+        val selectedPhoneType = binding.phoneType.checkedRadioButtonId
+        val phoneType = when (selectedPhoneType) {
+            R.id.comercial -> "Comercial"
+            R.id.house -> "Residencial"
+            else -> "Não especificado"
+        }
+
+        val phoneTypeLowerCase = phoneType.lowercase(Locale.getDefault())
+
+        if (phone1.isEmpty()) {
+            Toast.makeText(this, """Por favor, preencha o telefone $phoneTypeLowerCase.""", Toast.LENGTH_SHORT).show()
+            valitedFields = false
+            return valitedFields
+        } else if (!ValidatorHelpers.isValidPhone(phone1)) {
+            Toast.makeText(this, """Por favor, preencha o telefone $phoneTypeLowerCase válido.""", Toast.LENGTH_SHORT).show()
+            valitedFields = false
+            return valitedFields
+        }
+
+        if (binding.phone2.visibility == VISIBLE) {
+            if (phone2.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    """Por favor, preencha um telefone celular.""",
+                    Toast.LENGTH_SHORT
+                ).show()
+                valitedFields = false
+                return valitedFields
+            } else if (!ValidatorHelpers.isValidPhone(phone2)) {
+                Toast.makeText(
+                    this,
+                    "Por favor, preencha um telefone celular válido.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                valitedFields = false
+                return valitedFields
+            }
+        }
+
+        val email = binding.email.text.toString()
+        if (email.isEmpty()) {
+            Toast.makeText(this, "Por favor, preencha seu email.", Toast.LENGTH_SHORT).show()
+            valitedFields = false
+            return valitedFields
+        } else if (!ValidatorHelpers.isValidEmail(email)) {
+            Toast.makeText(this, "Por favor, preencha um email válido.", Toast.LENGTH_SHORT).show()
+            valitedFields = false
+            return valitedFields
+        }
+
+        val birthDate = binding.birthDate.text.toString()
+        if (birthDate.isEmpty()) {
+            Toast.makeText(this, "Por favor, preencha a data de nascimento.", Toast.LENGTH_SHORT).show()
+            valitedFields = false
+            return valitedFields
+        }
+
+        val education = binding.education.selectedItem.toString()
+        if (education == "Selecione o nivel de escolaridade") {
+            Toast.makeText(this, "Por favor, selecione um nível de escolaridade.", Toast.LENGTH_SHORT).show()
+            valitedFields = false
+            return valitedFields
+        }
+
+        val conclusionYear = binding.conclusionYear.text.toString()
+        val institution = binding.institution.text.toString()
+        val thesisTitle = binding.thesisTitle.text.toString()
+        val advisor = binding.advisor.text.toString()
+
+        when (education) {
+            "Ensino Fundamental", "Ensino Médio" -> {
+
+                if(!validatedConclusionYear(conclusionYear)) {
+                    valitedFields = false
+                    return valitedFields
+                }
+            }
+            "Ensino Superior", "Pós-graduação" -> {
+                if(!validatedConclusionYear(conclusionYear)) {
+                    valitedFields = false
+                    return valitedFields
+                }
+                if(!validatedInstitution(institution)){
+                    valitedFields = false
+                    return valitedFields
+                }
+            }
+            "Mestrado", "Doutorado" -> {
+                if(!validatedConclusionYear(conclusionYear)) {
+                    valitedFields = false
+                    return valitedFields
+                }
+                if(!validatedInstitution(institution)){
+                    valitedFields = false
+                    return valitedFields
+                }
+                if(!validatedThesisTitle(thesisTitle)){
+                    valitedFields = false
+                    return valitedFields
+                }
+                if(!validatedAdvisor(advisor)){
+                    valitedFields = false
+                    return valitedFields
+                }
+            }
+        }
+
+        val jobsInterest = binding.jobsInterest.text.toString()
+        if (jobsInterest.isEmpty()) {
+            Toast.makeText(this, "Por favor, preencha vagas de interesse.", Toast.LENGTH_SHORT).show()
+            valitedFields = false
+            return valitedFields
+        }
+
+        return valitedFields
+    }
+
+    private fun clearFields(){
+        binding.name.text.clear()
+        binding.phone1.text.clear()
+        binding.phone2.visibility = GONE
+        binding.phone2.text.clear()
+        binding.email.text.clear()
+        binding.emailList.isChecked = false
+        binding.birthDate.text?.clear()
+        binding.genderGroup.clearCheck()
+        binding.education.setSelection(0)
+        binding.conclusionYear.text.clear()
+        binding.institution.text.clear()
+        binding.thesisTitle.text.clear()
+        binding.advisor.text.clear()
+        binding.jobsInterest.text.clear()
     }
 
     private fun validatedConclusionYear(conclusionYear: String): Boolean {
